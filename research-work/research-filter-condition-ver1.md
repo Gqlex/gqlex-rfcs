@@ -89,43 +89,50 @@ input: {
 ## Use cases
 1. Select objects and value - already  supported, not by filter
 2. Select objects by operator to ... input value
-3. 2. Select objects by operator to ... input value, check internal path exist and object is not null
-3. Select objects by internal values combination by logical operators (&&, ||)
+3. Select objects by operator to ... input value, check internal path exist and object is not null
+4. Select objects by internal values combination by logical operators (&&, ||)
 
 
 ## Thoughts
 use case 1:
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg]
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg]
 
-- select object within a value - select clientMutationId within input argument value
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg].value/clientMutationId
+select object within a value - select clientMutationId within input argument value
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg].value/clientMutationId
 
 use case 2:
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.clientMutationId=1)
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/localization/country != "US)
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.clientMutationId=1)
+> 
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/localization/country != "US)
 
 Select input[type=arg] where internal clientMutationId is 1
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.clientMutationId=1 && .companyCompanySetupInfo/profile/localization.country != "US)
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg]( **(**.clientMutationId=1 
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.clientMutationId=1 && .companyCompanySetupInfo/profile/localization.country != "US)
+> 
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg]( **(**.clientMutationId=1 
     && .companyCompanySetupInfo/profile/localization/country) != "US **)** 
     || .companyCompanySetupInfo/profile/contactMethods/emails contains "gmail.com")
 
 
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses not null)
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses not null)
 
-//{ name: "ADDRESS_LINE_1", value: "2491 Turkey Pen Road" }
-here the name is not null and select by its value of 'ADDRESS_LINE_1' but there is also the value that can be select by "2491 Turkey Pen Road", i am thinking how to do it without making it hard to understand and be adopted.
+---------------
+**Compsiste condition**
 
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents/name == 'ADDRESS_LINE_1')
+> //{ name: "ADDRESS_LINE_1", value: "2491 Turkey Pen Road" }
 
-leads to-->
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents **-> (name == 'ADDRESS_LINE_1' && value != "new york")**)
+As you can see the name is not null and select by its value of 'ADDRESS_LINE_1' but there is also the value that can be select by "2491 Turkey Pen Road", i am thinking how to do it without making it hard to understand and be adopted.
 
-another option is to have canonical path selection which is 
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents/name == 'ADDRESS_LINE_1')
 
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents/name == "ADDRESS_LINE_1"(.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents/value != "new york"))
+leads to -->
 
-which leads to:
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents **-> (name == 'ADDRESS_LINE_1' && value != "new york")**)
+
+Another option is to have canonical path selection which is 
+
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents/name == "ADDRESS_LINE_1"(.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents/value != "new york"))
+
+Which leads to:
 - too long CONDITION_PHRASE
 - cumbersome
 - hard to understand
@@ -134,10 +141,10 @@ we need the ability to define a composite condition over the same object, which 
 
 another example,
 
-Consider we would like to select //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg].value/clientMutationId based on
+Consider we would like to select ```//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg].value/clientMutationId``` based on
 contactMethods/addresses ad contactMethods/emails is not null.
 in order to optimize the search we should reffer to contactMethods as composite object implies on the filter
 
 The path-selection will be:
 
-//mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods **-> (addresses is not null && emails is not null)**)
+> //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods **-> (addresses is not null && emails is not null)**)
