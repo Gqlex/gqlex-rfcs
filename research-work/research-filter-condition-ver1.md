@@ -44,9 +44,9 @@ COMPOSITE_CONDITION_PHRASE: POINTpath-selection[constraint-predicate] ->
 
 POINT = internal path selection will always start with **.** ; Means that the relevant  path-selection will start from the select object which is root, selected root object represented as .
 
-OPERATOR: =, !=, >, <, >=, >-, contains, none-contains, match-regex, is null ( similar to '= null'), not null ( similar to '!= null')
+OPERATOR: =, !=, >, <, >=, >-, =~ (contains), !=~ (none-contains), 'is null' ( similar to '= null'), 'is not null' ( similar to '!= null')
 
-VALUE: "string value", TRUE, FALSE, int value, dec(decimal value)
+VALUE: "string value", TRUE, FALSE, int value, dec(decimal value), RegEx (e.g. /.*adidas/i)
 
 LOGICAL_OPERATOR = &&, ||, optional, based on the logical CONDITION_PHRASE value
 
