@@ -1,8 +1,8 @@
 
-# Research
+# Research on filter-predicate
 
 ## Suggested format
-{range-predicate}path-selection[constraint-predicate](filter-predicate)
+{select-predicate}path-selection[filter-predicate](filter-predicate)
 
 filter-predicate: LEFT_CIRCLE_BRACES CONDITION_PHRASE RIGHT_CIRCLE_BRACES
 ```
