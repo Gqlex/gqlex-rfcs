@@ -120,11 +120,13 @@ Select input[type=arg] where internal clientMutationId is 1
 
 > //{ name: "ADDRESS_LINE_1", value: "2491 Turkey Pen Road" }
 
-As you can see the name is not null and select by its value of 'ADDRESS_LINE_1' but there is also the value that can be select by "2491 Turkey Pen Road", i am thinking how to do it without making it hard to understand and be adopted.
+The name and the value are belong to the same object with the array,
 
 > //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents/name == 'ADDRESS_LINE_1')
 
 leads to -->
+
+use of **->**
 
 > //mutation[name=createCompany]/createCompany_CompanySetupInfo/input[type=arg](.companyCompanySetupInfo/profile/contactMethods/addresses/addressComponents **-> (name == 'ADDRESS_LINE_1' && value != "new york")**)
 
